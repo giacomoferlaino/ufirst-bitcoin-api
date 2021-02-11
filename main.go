@@ -12,6 +12,8 @@ import (
 func main() {
 	router := http.NewServeMux()
 	rpcServer := rpc.NewServer()
+	rpcServer.RegisterCodec(json.NewCodec(), "application/json")
+	rpcServer.RegisterService(new(bitcoin.Service), "bitcoin")
 	router.Handle("/rpc", rpcServer)
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
