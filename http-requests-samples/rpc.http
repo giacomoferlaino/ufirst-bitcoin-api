@@ -1,0 +1,12 @@
+POST http://localhost:8080/rpc HTTP/1.1
+Content-Type: application/json
+
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "method": "bitcoin.GetBitcoinClosingPricesChart",
+  "params": [{
+    "StartDateISO8601": "2021-01-08",
+    "EndDateISO8601": "2021-01-13"
+  }]
+}
