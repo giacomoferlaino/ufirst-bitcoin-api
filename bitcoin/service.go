@@ -9,6 +9,7 @@ import (
 
 	"github.com/gorilla/rpc/v2/json2"
 	"ufirst.com/bitcoin/coindesk"
+	"ufirst.com/bitcoin/imagecharts"
 )
 
 // Args contains the RPC request fields
@@ -58,6 +59,7 @@ func (s *Service) GetBitcoinClosingPricesChart(r *http.Request, args *Args, repl
 	if err != nil {
 		return err
 	}
-	reply.URL = string(coindeskAPIResponse)
+	chart := imagecharts.NewChart(priceHistory.DatesList(), priceHistory.ValuesList(), coindesk.RFC3339custom, &startDate, &endDate)
+	reply.URL = chart.URL().String()
 	return nil
 }

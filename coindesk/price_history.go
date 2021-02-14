@@ -59,3 +59,21 @@ func (p *PriceHistory) UnmarshalJSON(data []byte) error {
 	}
 	return nil
 }
+
+// DatesList returns a slice containing all the prices date
+func (p *PriceHistory) DatesList() []time.Time {
+	datesList := []time.Time{}
+	for _, price := range p.Prices {
+		datesList = append(datesList, price.Date)
+	}
+	return datesList
+}
+
+// ValuesList returns a slice containing all the prices value
+func (p *PriceHistory) ValuesList() []float64 {
+	datesList := []float64{}
+	for _, price := range p.Prices {
+		datesList = append(datesList, price.Value)
+	}
+	return datesList
+}
