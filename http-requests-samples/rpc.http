@@ -5,8 +5,9 @@ Content-Type: application/json
   "id": 1,
   "jsonrpc": "2.0",
   "method": "bitcoin.GetBitcoinClosingPricesChart",
-  "params": [{
-    "StartDateISO8601": "2021-01-08",
-    "EndDateISO8601": "2021-01-13"
-  }]
+  "params": {
+    "startDateISO8601": "2021-01-08",
+    "endDateISO8601": "2021-01-13"
+  }
 }
+

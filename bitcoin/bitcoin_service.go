@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/gorilla/rpc/v2/json2"
 )
 
 const rfc3339custom = "2006-01-02"
@@ -15,14 +17,14 @@ type Args struct {
 	EndDateISO8601   string `json:"endDateISO8601"`
 }
 
-// NewService returns a new service
-func NewService(maxDaysDifference uint) *Service {
-	return &Service{maxDaysDifference}
-}
-
 // Reply contains the RPC response fields
 type Reply struct {
 	URL string
+}
+
+// NewService returns a new service
+func NewService(maxDaysDifference uint) *Service {
+	return &Service{maxDaysDifference}
 }
 
 // Service is the struct containing the supported RPC methods
@@ -41,8 +43,13 @@ func (s *Service) GetBitcoinClosingPricesChart(r *http.Request, args *Args, repl
 		return errors.New("invalid end date format")
 	}
 	if endDate.After(startDate.AddDate(0, 0, int(s.maxDaysDifference))) {
-		return fmt.Errorf("The difference between start date and end date could not be greater than %v days", s.maxDaysDifference)
+		// return fmt.Errorf("The difference between start date and end date could not be greater than %v days", s.maxDaysDifference)
+		return &json2.Error{
+			Code:    -1,
+			Message: fmt.Sprintf("The difference between start date and end date could not be greater than %v days", s.maxDaysDifference),
+		}
 	}
-	reply.URL = ""
+	coindeskProxy := newCoindeskProxy(eur)
+	reply.URL, err = coindeskProxy.historical(startDate, endDate)
 	return nil
 }
