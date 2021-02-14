@@ -47,7 +47,7 @@ func (s *Service) GetBitcoinClosingPricesChart(r *http.Request, args *Args, repl
 			Message: fmt.Sprintf("The difference between start date and end date could not be greater than %v days", s.maxDaysDifference),
 		}
 	}
-	coindeskProxy := coindesk.NewProxy(coindesk.EUR)
+	coindeskProxy := coindesk.NewProxy()
 	reply.URL, err = coindeskProxy.Historical(startDate, endDate)
 	return nil
 }

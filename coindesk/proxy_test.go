@@ -19,9 +19,8 @@ func TestNewProxy(t *testing.T) {
 			Scheme: "https",
 			Host:   "api.coindesk.com",
 		},
-		Currency: EUR,
 	}
-	proxy := NewProxy(EUR)
+	proxy := NewProxy()
 	if !cmp.Equal(expectedProxy, proxy) {
 		proxyBs, _ := json.Marshal(proxy)
 		expectedProxyBs, _ := json.Marshal(expectedProxy)
@@ -34,7 +33,7 @@ func TestHistoricalHTTPGetError(t *testing.T) {
 	httpGet = func(url string) (resp *http.Response, err error) {
 		return nil, expectedError
 	}
-	proxy := NewProxy(EUR)
+	proxy := NewProxy()
 	_, err := proxy.Historical(time.Time{}, time.Time{})
 	if !errors.Is(err, expectedError) {
 		t.Fatalf("got '%v', want '%v'", err, expectedError)
@@ -50,7 +49,7 @@ func TestHistoricalHTTPGetSuccess(t *testing.T) {
 		}
 		return &response, nil
 	}
-	proxy := NewProxy(EUR)
+	proxy := NewProxy()
 	response, _ := proxy.Historical(time.Time{}, time.Time{})
 	if response != bodyText {
 		t.Fatalf("got '%v', want '%v'", response, bodyText)
@@ -58,14 +57,9 @@ func TestHistoricalHTTPGetSuccess(t *testing.T) {
 }
 
 func TestEqualFail(t *testing.T) {
-	proxy := NewProxy(EUR)
-	proxy2 := NewProxy(USD)
+	proxy := NewProxy()
+	proxy2 := NewProxy()
 	result := proxy.Equal(proxy2)
-	if result {
-		// should have a different currency
-		t.Fatalf("got '%v', want '%v'", result, false)
-	}
-	proxy2.Currency = proxy.Currency
 	proxy2.APIURL = url.URL{}
 	result = proxy.Equal(proxy2)
 	if result {
@@ -75,8 +69,8 @@ func TestEqualFail(t *testing.T) {
 }
 
 func TestEqualSuccess(t *testing.T) {
-	proxy := NewProxy(EUR)
-	proxy2 := NewProxy(EUR)
+	proxy := NewProxy()
+	proxy2 := NewProxy()
 	result := proxy.Equal(proxy2)
 	if !result {
 		// should be equivalent
