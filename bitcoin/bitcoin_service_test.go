@@ -16,7 +16,7 @@ func TestGetBitcoinClosingPricesChartInvalidStartDate(t *testing.T) {
 	reply := &Reply{}
 	expectedError := errors.New("invalid start date format")
 	err := service.GetBitcoinClosingPricesChart(httpRequest, args, reply)
-	if err.Error() != expectedError.Error() {
+	if errors.Is(err, expectedError) {
 		t.Fatalf("got err = %v, want err = %v", err, expectedError)
 	}
 }
@@ -30,7 +30,7 @@ func TestGetBitcoinClosingPricesChartInvalidEndDate(t *testing.T) {
 	reply := &Reply{}
 	expectedError := errors.New("invalid end date format")
 	err := service.GetBitcoinClosingPricesChart(httpRequest, args, reply)
-	if err.Error() != expectedError.Error() {
+	if errors.Is(err, expectedError) {
 		t.Fatalf("got err = %v, want err = %v", err, expectedError)
 	}
 }
@@ -45,7 +45,7 @@ func TestGetBitcoinClosingPricesChartInvalidDaysDifference(t *testing.T) {
 	reply := &Reply{}
 	expectedError := fmt.Errorf("The difference between start date and end date could not be greater than %v days", maxDaysDifference)
 	err := service.GetBitcoinClosingPricesChart(httpRequest, args, reply)
-	if err.Error() != expectedError.Error() {
+	if errors.Is(err, expectedError) {
 		t.Fatalf("got err = %v, want err = %v", err, expectedError)
 	}
 }

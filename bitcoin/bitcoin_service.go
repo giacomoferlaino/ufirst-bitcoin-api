@@ -43,7 +43,6 @@ func (s *Service) GetBitcoinClosingPricesChart(r *http.Request, args *Args, repl
 		return errors.New("invalid end date format")
 	}
 	if endDate.After(startDate.AddDate(0, 0, int(s.maxDaysDifference))) {
-		// return fmt.Errorf("The difference between start date and end date could not be greater than %v days", s.maxDaysDifference)
 		return &json2.Error{
 			Code:    -1,
 			Message: fmt.Sprintf("The difference between start date and end date could not be greater than %v days", s.maxDaysDifference),
