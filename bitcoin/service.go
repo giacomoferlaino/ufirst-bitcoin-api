@@ -1,6 +1,7 @@
 package bitcoin
 
 import (
+	"encoding/json"
 	"errors"
 	"fmt"
 	"net/http"
@@ -48,6 +49,15 @@ func (s *Service) GetBitcoinClosingPricesChart(r *http.Request, args *Args, repl
 		}
 	}
 	coindeskProxy := coindesk.NewProxy()
-	reply.URL, err = coindeskProxy.Historical(startDate, endDate)
+	priceHistory := coindesk.NewPriceHistory()
+	coindeskAPIResponse, err := coindeskProxy.Historical(startDate, endDate)
+	if err != nil {
+		return err
+	}
+	err = json.Unmarshal(coindeskAPIResponse, priceHistory)
+	if err != nil {
+		return err
+	}
+	reply.URL = string(coindeskAPIResponse)
 	return nil
 }
