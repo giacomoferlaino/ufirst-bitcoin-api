@@ -31,7 +31,7 @@ type Proxy struct {
 }
 
 // Historical returns the bitcoin values history between the specified dates
-func (p *Proxy) Historical(startDate time.Time, endDate time.Time) (string, error) {
+func (p *Proxy) Historical(startDate time.Time, endDate time.Time) ([]byte, error) {
 	relativePath := "v1/bpi/historical/close.json"
 	p.APIURL.Path = relativePath
 	query := url.Values{}
@@ -40,14 +40,14 @@ func (p *Proxy) Historical(startDate time.Time, endDate time.Time) (string, erro
 	p.APIURL.RawQuery = query.Encode()
 	response, err := httpGet(p.APIURL.String())
 	if err != nil {
-		return "", err
+		return []byte{}, err
 	}
 	defer response.Body.Close()
 	body, err := ioutil.ReadAll(response.Body)
 	if err != nil {
-		return "", err
+		return []byte{}, err
 	}
-	return string(body), nil
+	return body, nil
 }
 
 // Equal compares two proxies for equality

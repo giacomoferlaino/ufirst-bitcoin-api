@@ -1,12 +1,12 @@
 package coindesk
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
 	"io/ioutil"
 	"net/http"
 	"net/url"
-	"strings"
 	"testing"
 	"time"
 
@@ -41,8 +41,8 @@ func TestHistoricalHTTPGetError(t *testing.T) {
 }
 
 func TestHistoricalHTTPGetSuccess(t *testing.T) {
-	bodyText := "success"
-	responseBody := ioutil.NopCloser(strings.NewReader(bodyText))
+	bodyText := []byte("success")
+	responseBody := ioutil.NopCloser(bytes.NewReader(bodyText))
 	httpGet = func(url string) (resp *http.Response, err error) {
 		response := http.Response{
 			Body: responseBody,
@@ -51,8 +51,8 @@ func TestHistoricalHTTPGetSuccess(t *testing.T) {
 	}
 	proxy := NewProxy()
 	response, _ := proxy.Historical(time.Time{}, time.Time{})
-	if response != bodyText {
-		t.Fatalf("got '%v', want '%v'", response, bodyText)
+	if isEqual := bytes.Compare(response, bodyText); isEqual != 0 {
+		t.Fatalf("got '%v', want '%v'", string(response), string(bodyText))
 	}
 }
 
