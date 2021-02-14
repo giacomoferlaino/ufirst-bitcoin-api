@@ -56,3 +56,30 @@ func TestHistoricalHTTPGetSuccess(t *testing.T) {
 		t.Fatalf("got '%v', want '%v'", response, bodyText)
 	}
 }
+
+func TestEqualFail(t *testing.T) {
+	proxy := NewProxy(EUR)
+	proxy2 := NewProxy(USD)
+	result := proxy.Equal(proxy2)
+	if result {
+		// should have a different currency
+		t.Fatalf("got '%v', want '%v'", result, false)
+	}
+	proxy2.Currency = proxy.Currency
+	proxy2.APIURL = url.URL{}
+	result = proxy.Equal(proxy2)
+	if result {
+		// should have a different url
+		t.Fatalf("got '%v', want '%v'", result, false)
+	}
+}
+
+func TestEqualSuccess(t *testing.T) {
+	proxy := NewProxy(EUR)
+	proxy2 := NewProxy(EUR)
+	result := proxy.Equal(proxy2)
+	if !result {
+		// should be equivalent
+		t.Fatalf("got '%v', want '%v'", result, true)
+	}
+}
