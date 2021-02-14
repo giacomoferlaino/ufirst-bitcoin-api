@@ -1,0 +1,9 @@
+version: "3.9"
+
+services:
+  bitcoin-api:
+    image: ufirst/bitcoin-api
+    build: .
+    env_file: ./.env
+    ports:
+      - ${PORT}:${PORT}
