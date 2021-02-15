@@ -59,6 +59,7 @@ func (s *Service) GetBitcoinClosingPricesChart(r *http.Request, args *Args, repl
 	if err != nil {
 		return err
 	}
+	priceHistory.SortByDate()
 	chart := imagecharts.NewChart(priceHistory.DatesList(), priceHistory.ValuesList(), coindesk.RFC3339custom, &startDate, &endDate)
 	reply.URL = chart.URL().String()
 	return nil

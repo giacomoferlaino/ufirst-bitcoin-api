@@ -3,6 +3,7 @@ package coindesk
 import (
 	"encoding/json"
 	"errors"
+	"sort"
 	"time"
 )
 
@@ -22,6 +23,13 @@ func NewPrice(date time.Time, value float64) *Price {
 		Value: value,
 	}
 }
+
+// ByDate returns a list of prices sorted by date
+type ByDate []Price
+
+func (a ByDate) Len() int           { return len(a) }
+func (a ByDate) Less(i, j int) bool { return a[i].Date.Before(a[j].Date) }
+func (a ByDate) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
 
 // PriceHistory contains bitcoin values
 type PriceHistory struct {
@@ -76,4 +84,9 @@ func (p *PriceHistory) ValuesList() []float64 {
 		datesList = append(datesList, price.Value)
 	}
 	return datesList
+}
+
+// SortByDate sorts the current list of prices by date
+func (p *PriceHistory) SortByDate() {
+	sort.Sort(ByDate(p.Prices))
 }
